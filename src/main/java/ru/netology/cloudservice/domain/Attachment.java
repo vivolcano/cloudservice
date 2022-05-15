@@ -37,18 +37,19 @@ public class Attachment extends CreateAtIdentified implements Identified<UUID> {
     /**
      * Имя файла
      */
-    @Column(nullable = false)
+    @Column(name = "file_name", nullable = false)
     String fileName;
 
     /**
      * Тип файла
      */
-    @Column(nullable = false)
+    @Column(name = "file_type", nullable = false)
     String fileType;
 
     /**
      * Размер файла в байтах
      */
+    @Column(name = "file_size", nullable = false)
     long fileSize;
 
     /**
