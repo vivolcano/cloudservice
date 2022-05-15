@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -23,7 +22,7 @@ import java.util.UUID;
 @Where(clause = "deleted = false")
 @Table(name = "attachment")
 @Entity
-public class Attachment implements Serializable {
+public class Attachment extends CreateAtIdentified implements Identified<UUID> {
 
     private static final long serialVersionUID = -9005741475704378708L;
 
