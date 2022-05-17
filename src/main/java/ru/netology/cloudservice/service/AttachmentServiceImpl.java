@@ -1,5 +1,9 @@
 package ru.netology.cloudservice.service;
 
+import static java.lang.Boolean.TRUE;
+import static java.lang.String.format;
+import static java.util.stream.Collectors.toList;
+
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -14,10 +18,6 @@ import ru.netology.cloudservice.repository.AttachmentRepository;
 
 import java.util.List;
 import java.util.Optional;
-
-import static java.lang.Boolean.TRUE;
-import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Реализация сервиса для работы с файлами {@link AttachmentService}
@@ -45,7 +45,7 @@ public class AttachmentServiceImpl implements AttachmentService {
     public AttachmentDto addAttachment(MultipartFile file) {
         return Optional.of(file)
                 .map(this::isExistFileName)
-                .map(name -> mapper.map(file))
+                .map(mapper::map)
                 .map(attachmentRepository::save)
                 .map(mapper::map)
                 .orElseThrow(() -> new ValidationException("cloudService", format(
@@ -55,11 +55,11 @@ public class AttachmentServiceImpl implements AttachmentService {
     @Override
     public AttachmentDto updateAttachment(AttachmentDto attachmentDto, String fileName) {
         return attachmentRepository.findAttachmentByFileName(fileName)
-                .map(attachment -> attachment.setFileName(attachmentDto.getFileName()))
+                .map(attachment -> setNewFileName(attachmentDto, attachment))
                 .map(attachmentRepository::save)
                 .map(mapper::map)
                 .orElseThrow(() -> new ValidationException("cloudService",
-                        format("Файл %s не найден", attachmentDto.getFileName())));
+                        format("Файл %s не найден", fileName)));
     }
 
     @Override
@@ -88,7 +88,14 @@ public class AttachmentServiceImpl implements AttachmentService {
      * Метод проверяет, существует ли в базе данных файл с текущем именем.
      * Если файл с текущем именем не существует, то он возвращаеться, иначе null.
      */
-    private MultipartFile isExistFileName(MultipartFile file) {
+    MultipartFile isExistFileName(MultipartFile file) {
         return attachmentRepository.existsByFileName(file.getOriginalFilename()) ? null : file;
+    }
+
+    /**
+     * Метод устанавливает новое значение для имени файла
+     */
+    Attachment setNewFileName(AttachmentDto attachmentDto, Attachment attachment) {
+        return attachment.setFileName(attachmentDto.getFileName());
     }
 }
