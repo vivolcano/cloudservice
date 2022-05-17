@@ -1,0 +1,40 @@
+server:
+  port: ${APP_PORT:8080}
+
+spring:
+  application:
+    name: cloudService
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cloudService
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+    schema-locations: cloudService
+    connection-init-sql: CREATE SCHEMA IF NOT EXISTS "cloudService";
+
+  config:
+    use-legacy-processing: false
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    properties:
+      hibernate.temp.use_jdbc_metadata_defaults: false
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+      hbm2ddl:
+        auto: none
+      format_sql: true
+
+  liquibase:
+    enabled: false
+    default-schema: cloudService
+    liquibase-schema: cloudService
+    change-log: classpath:db/changelog/db.changelog-master.xml
+
+logging:
+  level:
+    ROOT: INFO
+    ru.netology: DEBUG
+    org.springframework: INFO
