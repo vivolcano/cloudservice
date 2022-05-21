@@ -1,0 +1,5 @@
+rootProject.name = 'cloudservice'
+include 'cloudservice-api'
+include 'cloudservice-db'
+
+

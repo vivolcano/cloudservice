@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="1" author="Viktor Loskutov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="attachment"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="attachment" remarks="Сохраненные файлы">
+            <column name="id" type="uuid" remarks="Уникальный идентификатор файла(UUID)"
+                    defaultValueComputed="${new_uuid}">
+                <constraints primaryKey="true" primaryKeyName="attachment_pk" nullable="false"/>
+            </column>
+
+            <column name="file_name" type="varchar(255)" remarks="Имя файла">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="file_type" type="varchar(255)" remarks="Тип файла">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="file_size" type="bigint" remarks="Размер файла в байтах">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="data" type="oid" remarks="Представление файла в байтах">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="deleted" type="bool" remarks="Признак удаления должности" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="instant" remarks="Дата создания" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_user" type="varchar(255)"
+                    remarks="Идентификатор пользователя, который добавлял файл">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="instant" remarks="Дата обновления" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_modify_user" type="varchar(255)"
+                    remarks="Идентификатор пользователя, который редактировал (включая добавление) файл">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <comment>База данных облачного хранилища</comment>
+    </changeSet>
+
+</databaseChangeLog>
