@@ -32,7 +32,8 @@ public interface AttachmentService {
     /**
      * Обновление файла
      *
-     * @param attachmentDto dto с параметрами для обновления файла
+     * @param attachmentDto dto файла
+     * @param fileName новое имя файла
      * @return dto файла
      */
     AttachmentDto updateAttachment(AttachmentDto attachmentDto, String fileName);

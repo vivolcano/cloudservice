@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 
 /**
- * Представление сущности файла в системе
+ * Представление модели файла в системе
  *
  * @author Viktor_Loskutov
  */

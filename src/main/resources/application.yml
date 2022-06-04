@@ -1,7 +1,7 @@
 server:
   port: ${APP_PORT:8080}
   servlet:
-    application-display-name: cloudService
+    application-display-name: Cloud Service
 
 spring:
   application:
@@ -12,6 +12,9 @@ spring:
     username: postgres
     password: postgres
     driverClassName: org.postgresql.Driver
+    hikari:
+      schema: cloudService
+      connection-init-sql: CREATE SCHEMA IF NOT EXISTS "cloudService";
 
   config:
     use-legacy-processing: false
@@ -20,15 +23,14 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
     properties:
       hibernate.temp.use_jdbc_metadata_defaults: false
-    show-sql: false
+    show-sql: true
     hibernate:
       ddl-auto: none
-      hbm2ddl:
-        auto: none
-        format_sql: true
 
   liquibase:
     enabled: true
+    default-schema: cloudService
+    liquibase-schema: cloudService
     change-log: classpath:db/changelog/db.changelog-master.xml
 
 logging:

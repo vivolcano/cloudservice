@@ -10,8 +10,6 @@ import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 import org.springframework.lang.Nullable;
 
-import java.io.Serializable;
-
 /**
  * Описание единичной ошибки
  *
@@ -19,11 +17,9 @@ import java.io.Serializable;
  */
 @Getter
 @Accessors(chain = true)
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @ApiModel(description = "Базовая модель описание единичной ошибки")
-public final class WarningMessage implements Serializable {
-
-    private static final long serialVersionUID = -9005741475704378708L;
+public final class WarningMessage {
 
     /**
      * Идентификатор системы, которая сформировала ошибку
@@ -35,7 +31,6 @@ public final class WarningMessage implements Serializable {
      * Сообщение об ошибке для отображения пользователю
      */
     @ApiModelProperty(value = "Сообщение об ошибке для отображения пользователю", example = "Файл picture.jpg не найден", required = true)
-    final
     String displayMessage;
 
     @JsonCreator
