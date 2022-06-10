@@ -1,15 +1,23 @@
 package ru.netology.cloudservice.api;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import ru.netology.cloudservice.api.dto.AttachmentDto;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
-import ru.netology.cloudservice.api.dto.AttachmentDto;
 
 /**
  * API для работы с файлами
@@ -17,56 +25,46 @@ import ru.netology.cloudservice.api.dto.AttachmentDto;
  * @author Viktor_Loskutov
  */
 @RequestMapping("/file")
-@Api(value = "API для работы с файлами")
+@Tag(name = "API для работы с файлами")
 public interface AttachmentResource {
 
-    @ApiOperation(value = "Загрузка файла на облако")
+    @Operation(description = "Загрузка файла на облако")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Файл загружен", response = AttachmentDto.class, responseContainer = "AttachmentDto"),
-            @ApiResponse(code = 400, message = "Ошибка ввода данных", response = RuntimeException.class),
-            @ApiResponse(code = 401,
-                    message = "Полномочия не подтверждены. Например, JWT невалиден, отсутствует, либо неверного формата",
-                    response = RuntimeException.class)
+            @ApiResponse(responseCode = "200", description = "Файл загружен"),
+            @ApiResponse(responseCode = "400", description = "Ошибка ввода данных"),
+            @ApiResponse(responseCode = "401",
+                    description = "Полномочия не подтверждены. Например, JWT невалиден, отсутствует, либо неверного формата")
     })
     @PostMapping("create")
     ResponseEntity<AttachmentDto> create(@RequestParam("filename") MultipartFile file, UriComponentsBuilder componentsBuilder);
 
-    @ApiOperation(value = "Загрузка из облака")
+    @Operation(description = "Загрузка из облака")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Файл загружен", response = AttachmentDto.class, responseContainer = "AttachmentDto"),
-            @ApiResponse(code = 400, message = "Ошибка ввода данных", response = RuntimeException.class),
-            @ApiResponse(code = 401,
-                    message = "Полномочия не подтверждены. Например, JWT невалиден, отсутствует, либо неверного формата",
-                    response = RuntimeException.class),
-            @ApiResponse(code = 500, message = "Ошибка загрузки файла",
-                    response = RuntimeException.class)
+            @ApiResponse(responseCode = "200", description = "Файл загружен"),
+            @ApiResponse(responseCode = "400", description = "Ошибка ввода данных"),
+            @ApiResponse(responseCode = "401", description = "Полномочия не подтверждены. Например, JWT невалиден, отсутствует, либо неверного формата"),
+            @ApiResponse(responseCode = "500", description = "Ошибка загрузки файла")
     })
     @GetMapping("read/{filename}")
     ResponseEntity<Resource> read(@PathVariable String filename);
 
-    @ApiOperation(value = "Обновление файла")
+    @Operation(description = "Обновление файла")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Файл обновлен", response = AttachmentDto.class, responseContainer = "AttachmentDto"),
-            @ApiResponse(code = 400, message = "Ошибка ввода данных", response = RuntimeException.class),
-            @ApiResponse(code = 401,
-                    message = "Полномочия не подтверждены. Например, JWT невалиден, отсутствует, либо неверного формата",
-                    response = RuntimeException.class),
-            @ApiResponse(code = 500, message = "Ошибка обновления файла",
-                    response = RuntimeException.class)
+            @ApiResponse(responseCode = "200", description = "Файл обновлен"),
+            @ApiResponse(responseCode = "400", description = "Ошибка ввода данных"),
+            @ApiResponse(responseCode = "401", description = "Полномочия не подтверждены. Например, JWT невалиден, отсутствует, либо неверного формата"),
+            @ApiResponse(responseCode = "500", description = "Ошибка обновления файла")
     })
     @PutMapping("update/{filename}")
     ResponseEntity<AttachmentDto> update(@RequestBody AttachmentDto attachmentDto, @PathVariable("filename") String filename);
 
 
-    @ApiOperation(value = "Удаление файла")
+    @Operation(description = "Удаление файла")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Файл удален", response = AttachmentDto.class, responseContainer = "AttachmentDto"),
-            @ApiResponse(code = 400, message = "Ошибка ввода данных", response = RuntimeException.class),
-            @ApiResponse(code = 401,
-                    message = "Полномочия не подтверждены. Например, JWT невалиден, отсутствует, либо неверного формата",
-                    response = RuntimeException.class),
-            @ApiResponse(code = 500, message = "Ошибка удаления файла",
-                    response = RuntimeException.class)
+            @ApiResponse(responseCode = "200", description = "Файл удален"),
+            @ApiResponse(responseCode = "400", description = "Ошибка ввода данных"),
+            @ApiResponse(responseCode = "401", description = "Полномочия не подтверждены. Например, JWT невалиден, отсутствует, либо неверного формата"),
+            @ApiResponse(responseCode = "500", description = "Ошибка удаления файла")
     })
     @DeleteMapping("delete/{filename}")
     ResponseEntity<Void> delete(@PathVariable("filename") String filename);

@@ -13,6 +13,12 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
+import ru.netology.cloudservice.api.dto.AttachmentDto;
+import ru.netology.cloudservice.api.dto.WarningMessage;
+import ru.netology.cloudservice.domain.Attachment;
+import ru.netology.cloudservice.exception.ValidationException;
+import ru.netology.cloudservice.mapper.AttachmentMapper;
+import ru.netology.cloudservice.repository.AttachmentRepository;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,12 +31,6 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
-import ru.netology.cloudservice.api.dto.AttachmentDto;
-import ru.netology.cloudservice.api.dto.WarningMessage;
-import ru.netology.cloudservice.domain.Attachment;
-import ru.netology.cloudservice.exception.ValidationException;
-import ru.netology.cloudservice.mapper.AttachmentMapper;
-import ru.netology.cloudservice.repository.AttachmentRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -68,14 +68,17 @@ class AttachmentServiceImplTest {
         var fileName = randomString();
         var attachment = new Attachment().setFileName(fileName);
         var attachmentOptional = Optional.of(attachment);
+        var createUser = randomString();
 
-        doReturn(attachmentOptional).when(attachmentRepository).findAttachmentByFileName(fileName);
+        doReturn(createUser).when(subj).existUser();
+        doReturn(attachmentOptional).when(attachmentRepository).findAttachmentByFileNameAndCreateUser(fileName, createUser);
 
         var actual = subj.getAttachment(fileName);
 
         assertEquals(attachment, actual);
 
-        inOrder.verify(attachmentRepository, times(1)).findAttachmentByFileName(fileName);
+        inOrder.verify(subj, times(1)).existUser();
+        inOrder.verify(attachmentRepository, times(1)).findAttachmentByFileNameAndCreateUser(fileName, createUser);
         inOrder.verifyNoMoreInteractions();
     }
 
@@ -83,9 +86,12 @@ class AttachmentServiceImplTest {
     void getFail() {
         var fileName = randomString();
         var attachmentOptional = Optional.empty();
-        var expected = new WarningMessage("cloudService", format("Файл %s не найден", fileName));
+        var createUser = randomString();
 
-        doReturn(attachmentOptional).when(attachmentRepository).findAttachmentByFileName(fileName);
+        var expected = new WarningMessage("cloudService", format("Файл %s для пользователя %s не найден", fileName, createUser));
+
+        doReturn(createUser).when(subj).existUser();
+        doReturn(attachmentOptional).when(attachmentRepository).findAttachmentByFileNameAndCreateUser(fileName, createUser);
 
         var actual = assertThrows(ValidationException.class, () -> subj.getAttachment(fileName));
 
@@ -96,7 +102,8 @@ class AttachmentServiceImplTest {
                 }
         );
 
-        inOrder.verify(attachmentRepository, times(1)).findAttachmentByFileName(fileName);
+        inOrder.verify(subj, times(1)).existUser();
+        inOrder.verify(attachmentRepository, times(1)).findAttachmentByFileNameAndCreateUser(fileName, createUser);
         inOrder.verifyNoMoreInteractions();
     }
 
@@ -173,9 +180,12 @@ class AttachmentServiceImplTest {
 
         var attachmentOptional = Optional.of(attachment);
 
+        var createUser = randomString();
+
         var expected = new AttachmentDto().setFileName(attachmentDto.getFileName());
 
-        doReturn(attachmentOptional).when(attachmentRepository).findAttachmentByFileName(fileName);
+        doReturn(createUser).when(subj).existUser();
+        doReturn(attachmentOptional).when(attachmentRepository).findAttachmentByFileNameAndCreateUser(fileName, createUser);
         doReturn(renameAttachment).when(subj).setNewFileName(attachmentDto, attachment);
         doReturn(renameAttachment).when(attachmentRepository).save(renameAttachment);
         doReturn(expected).when(mapper).map(renameAttachment);
@@ -184,7 +194,8 @@ class AttachmentServiceImplTest {
 
         assertEquals(expected, actual);
 
-        inOrder.verify(attachmentRepository, times(1)).findAttachmentByFileName(fileName);
+        inOrder.verify(subj, times(1)).existUser();
+        inOrder.verify(attachmentRepository, times(1)).findAttachmentByFileNameAndCreateUser(fileName, createUser);
         inOrder.verify(subj, times(1)).setNewFileName(attachmentDto, attachment);
         inOrder.verify(attachmentRepository, times(1)).save(renameAttachment);
         inOrder.verify(mapper, times(1)).map(renameAttachment);
@@ -200,10 +211,12 @@ class AttachmentServiceImplTest {
                 .setId(randomUUID())
                 .setFileName(attachmentDto.getFileName());
 
-        var expected = new WarningMessage("cloudService",
-                format("Файл %s не найден", fileName));
+        var createUser = randomString();
 
-        doReturn(Optional.empty()).when(attachmentRepository).findAttachmentByFileName(fileName);
+        var expected = new WarningMessage("cloudService", format("Файл %s для пользователя %s не найден", fileName, createUser));
+
+        doReturn(createUser).when(subj).existUser();
+        doReturn(Optional.empty()).when(attachmentRepository).findAttachmentByFileNameAndCreateUser(fileName, createUser);
 
         var actual = assertThrows(ValidationException.class, () -> subj.updateAttachment(attachmentDto, fileName));
 
@@ -214,7 +227,8 @@ class AttachmentServiceImplTest {
                 }
         );
 
-        inOrder.verify(attachmentRepository, times(1)).findAttachmentByFileName(fileName);
+        inOrder.verify(subj, times(1)).existUser();
+        inOrder.verify(attachmentRepository, times(1)).findAttachmentByFileNameAndCreateUser(fileName, createUser);
         inOrder.verify(subj, never()).setNewFileName(attachmentDto, attachment);
         inOrder.verify(attachmentRepository, never()).save(renameAttachment);
         inOrder.verify(mapper, never()).map(renameAttachment);
@@ -227,15 +241,18 @@ class AttachmentServiceImplTest {
         var attachment = new Attachment().setFileName(fileName);
         var attachmentOptional = Optional.of(attachment);
         var attachmentDeleted = new Attachment().setId(attachment.getId()).setDeleted(true);
+        var createUser = randomString();
 
-        doReturn(attachmentOptional).when(attachmentRepository).findAttachmentByFileName(attachment.getFileName());
+        doReturn(createUser).when(subj).existUser();
+        doReturn(attachmentOptional).when(attachmentRepository).findAttachmentByFileNameAndCreateUser(attachment.getFileName(), createUser);
         doReturn(attachmentDeleted).when(attachmentRepository).save(attachment);
 
         var actual = subj.deleteAttachment(attachment.getFileName());
 
         assertTrue(actual);
 
-        inOrder.verify(attachmentRepository, times(1)).findAttachmentByFileName(attachment.getFileName());
+        inOrder.verify(subj, times(1)).existUser();
+        inOrder.verify(attachmentRepository, times(1)).findAttachmentByFileNameAndCreateUser(attachment.getFileName(), createUser);
         inOrder.verify(attachmentRepository, times(1)).save(attachment);
         inOrder.verifyNoMoreInteractions();
     }
@@ -245,9 +262,12 @@ class AttachmentServiceImplTest {
         var fileName = randomString();
         var attachment = new Attachment().setFileName(fileName);
         var attachmentOptional = Optional.empty();
-        var expected = new WarningMessage("cloudService", format("Файл %s не найден", fileName));
+        var createUser = randomString();
 
-        doReturn(attachmentOptional).when(attachmentRepository).findAttachmentByFileName(attachment.getFileName());
+        var expected = new WarningMessage("cloudService", format("Файл %s для пользователя %s не найден", fileName, createUser));
+
+        doReturn(createUser).when(subj).existUser();
+        doReturn(attachmentOptional).when(attachmentRepository).findAttachmentByFileNameAndCreateUser(attachment.getFileName(), createUser);
 
         var actual = assertThrows(ValidationException.class, () -> subj.deleteAttachment(fileName));
 
@@ -258,7 +278,8 @@ class AttachmentServiceImplTest {
                 }
         );
 
-        inOrder.verify(attachmentRepository, times(1)).findAttachmentByFileName(attachment.getFileName());
+        inOrder.verify(subj, times(1)).existUser();
+        inOrder.verify(attachmentRepository, times(1)).findAttachmentByFileNameAndCreateUser(attachment.getFileName(), createUser);
         inOrder.verify(attachmentRepository, never()).save(attachment);
         inOrder.verifyNoMoreInteractions();
     }
@@ -275,7 +296,10 @@ class AttachmentServiceImplTest {
                 new AttachmentDto().setFileName(attachments.get(1).getFileName())
         );
 
-        doReturn(attachments).when(attachmentRepository).findAll();
+        var createUser = randomString();
+
+        doReturn(createUser).when(subj).existUser();
+        doReturn(attachments).when(attachmentRepository).findAllByCreateUser(createUser);
         doReturn(actual.get(0)).when(mapper).map(attachments.get(0));
         doReturn(actual.get(1)).when(mapper).map(attachments.get(1));
 
@@ -283,7 +307,8 @@ class AttachmentServiceImplTest {
 
         assertIterableEquals(actual, expected);
 
-        inOrder.verify(attachmentRepository, times(1)).findAll();
+        inOrder.verify(subj, times(1)).existUser();
+        inOrder.verify(attachmentRepository, times(1)).findAllByCreateUser(createUser);
         inOrder.verify(mapper, times(1)).map(attachments.get(0));
         inOrder.verify(mapper, times(1)).map(attachments.get(1));
         inOrder.verifyNoMoreInteractions();
@@ -292,9 +317,11 @@ class AttachmentServiceImplTest {
     @Test
     void getAllFail() {
         var attachment = List.of();
-        var expected = new WarningMessage("cloudService", "Файлы не найдены");
+        var createUser = randomString();
+        var expected = new WarningMessage("cloudService", format("Файлы для пользователя %s не найдены", createUser));
 
-        doReturn(attachment).when(attachmentRepository).findAll();
+        doReturn(createUser).when(subj).existUser();
+        doReturn(attachment).when(attachmentRepository).findAllByCreateUser(createUser);
 
         var actual = assertThrows(ValidationException.class, () -> subj.getAllAttachment());
 
@@ -305,7 +332,8 @@ class AttachmentServiceImplTest {
                 }
         );
 
-        inOrder.verify(attachmentRepository, times(1)).findAll();
+        inOrder.verify(subj, times(1)).existUser();
+        inOrder.verify(attachmentRepository, times(1)).findAllByCreateUser(createUser);
         inOrder.verifyNoMoreInteractions();
     }
 
@@ -362,12 +390,17 @@ class AttachmentServiceImplTest {
     /**
      * Получить случайную строку длинной 10 символов
      *
-     * @return строка
+     * @return случайная строка
      */
     private String randomString() {
         return RandomStringUtils.random(10, true, false);
     }
 
+    /**
+     * Получить случайный MultipartFile
+     *
+     * @return MultipartFile
+     */
     private MultipartFile getMultipartFile() {
         return new MultipartFile() {
             @Override

@@ -5,7 +5,9 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
     
-    <include file="v1.01.add_attachment.xml" relativeToChangelogFile="true"/>
-    <include file="v1.02.add_uniq_index_with_soft_delete.xml" relativeToChangelogFile="true"/>
+    <include file="v1.01.add_attachment_table.xml" relativeToChangelogFile="true"/>
+    <include file="v1.02.add_roles_table.xml" relativeToChangelogFile="true"/>
+    <include file="v1.03.add_users_table.xml" relativeToChangelogFile="true"/>
+    <include file="v1.04.add_partial index.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

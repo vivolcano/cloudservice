@@ -2,8 +2,7 @@ package ru.netology.cloudservice.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -18,19 +17,19 @@ import org.springframework.lang.Nullable;
 @Getter
 @Accessors(chain = true)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@ApiModel(description = "Базовая модель описание единичной ошибки")
+@Schema(name = "WarningMessage", description = "Базовая модель описание единичной ошибки")
 public final class WarningMessage {
 
     /**
      * Идентификатор системы, которая сформировала ошибку
      */
-    @ApiModelProperty(value = "Идентификатор системы, которая сформировала ошибку", example = "invalid", required = true)
+    @Schema(name = "systemName", description = "Идентификатор системы, которая сформировала ошибку", example = "cloudService", required = true)
     String systemName;
 
     /**
      * Сообщение об ошибке для отображения пользователю
      */
-    @ApiModelProperty(value = "Сообщение об ошибке для отображения пользователю", example = "Файл picture.jpg не найден", required = true)
+    @Schema(name = "displayMessage", description = "Сообщение об ошибке для отображения пользователю",example = "Файл picture.jpg не найден", required = true)
     String displayMessage;
 
     @JsonCreator

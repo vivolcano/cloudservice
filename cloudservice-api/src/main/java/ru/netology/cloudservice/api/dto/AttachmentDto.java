@@ -1,8 +1,11 @@
 package ru.netology.cloudservice.api.dto;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 
@@ -17,12 +20,12 @@ import lombok.experimental.FieldDefaults;
 @Accessors(chain = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
-@ApiModel(description = "Модель файла в системе")
+@Schema(name = "AttachmentDto", description = "Модель файла в системе")
 public class AttachmentDto {
 
-    @ApiModelProperty(value = "Имя файла", example = "picture.jpg", required = true)
+    @Schema(name = "Имя файла", example = "picture.jpg", required = true)
     String fileName;
 
-    @ApiModelProperty(value = "Размер файла в байтах", example = "15467", allowEmptyValue = true)
+    @Schema(name = "Размер файла в байтах", example = "15467", nullable = true)
     long fileSize;
 }

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd">
+
+    <changeSet id="1" author="Viktor Loskutov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="roles"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="roles" remarks="Роли в системе в системе">
+            <column name="id" type="integer" remarks="Уникальный идентификатор пользователя(UUID)">
+                <constraints primaryKey="true" primaryKeyName="roles_pk" nullable="false"/>
+            </column>
+
+            <column name="name" type="varchar(20)" remarks="Наименование роли">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="created_at" type="instant" remarks="Дата создания" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_user" type="varchar(255)"
+                    remarks="Идентификатор пользователя, который добавлял файл">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="instant" remarks="Дата обновления" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_modify_user" type="varchar(255)"
+                    remarks="Идентификатор пользователя, который редактировал (включая добавление) файл">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <comment>Таблица с ролями</comment>
+    </changeSet>
+
+    <changeSet id="2" author="Viktor Loskutov">
+        <preConditions>
+            <tableExists tableName="roles"/>
+        </preConditions>
+
+        <loadUpdateData file="dictionary/roles.csv" primaryKey="id" relativeToChangelogFile="true"
+                        separator=";" tableName="roles">
+            <column name="id" type="integer"/>
+            <column name="name" type="string"/>
+        </loadUpdateData>
+        <comment>Роли пользователей в системе</comment>
+    </changeSet>
+</databaseChangeLog>

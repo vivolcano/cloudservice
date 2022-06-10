@@ -1,0 +1,3 @@
+id;name;create_user;last_modify_user
+1;ROLE_ADMIN;liquibase;liquibase
+2;ROLE_USER;liquibase;liquibase

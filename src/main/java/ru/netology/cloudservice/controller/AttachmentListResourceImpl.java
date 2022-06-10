@@ -1,14 +1,13 @@
 package ru.netology.cloudservice.controller;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
 import ru.netology.cloudservice.api.AttachmentListResource;
 import ru.netology.cloudservice.api.dto.AttachmentDto;
 import ru.netology.cloudservice.service.AttachmentService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -18,12 +17,11 @@ import java.util.List;
  * @author Viktor_Loskutov
  */
 @Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @RestController
 public class AttachmentListResourceImpl implements AttachmentListResource {
 
-    AttachmentService attachmentService;
+    private final AttachmentService attachmentService;
 
     @Override
     public ResponseEntity<List<AttachmentDto>> readAll() {

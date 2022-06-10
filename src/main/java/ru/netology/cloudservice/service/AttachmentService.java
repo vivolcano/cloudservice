@@ -1,13 +1,13 @@
 package ru.netology.cloudservice.service;
 
-import org.springframework.web.multipart.MultipartFile;
 import ru.netology.cloudservice.api.dto.AttachmentDto;
 import ru.netology.cloudservice.domain.Attachment;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 /**
- *
  * Сервис для работы с файлами
  *
  * @author Viktor_Loskutov
@@ -33,7 +33,7 @@ public interface AttachmentService {
      * Обновление файла
      *
      * @param attachmentDto dto файла
-     * @param fileName новое имя файла
+     * @param fileName      новое имя файла
      * @return dto файла
      */
     AttachmentDto updateAttachment(AttachmentDto attachmentDto, String fileName);
@@ -49,7 +49,7 @@ public interface AttachmentService {
     /**
      * Получение информации по всем файлам
      *
-     * @return список с dto файлов
+     * @return список dto файлов
      */
     List<AttachmentDto> getAllAttachment();
 }

@@ -23,7 +23,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
     properties:
       hibernate.temp.use_jdbc_metadata_defaults: false
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: none
 
@@ -38,3 +38,11 @@ logging:
     ROOT: INFO
     ru.netology: DEBUG
     org.springframework: INFO
+
+jwt:
+  secret: netology
+
+springdoc:
+  version: '@springdoc.version@'
+  swagger-ui:
+    use-root-path: true

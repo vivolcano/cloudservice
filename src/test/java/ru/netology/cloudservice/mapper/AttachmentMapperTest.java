@@ -4,6 +4,9 @@ import static org.apache.commons.lang3.RandomUtils.nextLong;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import ru.netology.cloudservice.api.dto.AttachmentDto;
+import ru.netology.cloudservice.domain.Attachment;
+import ru.netology.cloudservice.repository.AttachmentRepository;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
@@ -18,9 +21,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.lang.Nullable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.multipart.MultipartFile;
-import ru.netology.cloudservice.api.dto.AttachmentDto;
-import ru.netology.cloudservice.domain.Attachment;
-import ru.netology.cloudservice.repository.AttachmentRepository;
 
 import java.io.File;
 import java.io.IOException;

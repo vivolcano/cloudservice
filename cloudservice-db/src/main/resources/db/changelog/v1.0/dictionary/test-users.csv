@@ -1,0 +1,2 @@
+login;password;roles_id;create_user;last_modify_user
+test;$2a$10$neVD48jTZRcJ/5jKm44mvOc4TOuk9u4psTcIzFske7CGzccJ2eIYi;1;liquibase;liquibase

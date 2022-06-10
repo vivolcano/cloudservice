@@ -7,21 +7,21 @@ import lombok.experimental.Accessors;
 import org.springframework.lang.NonNull;
 
 /**
- * Исключение, содержащее одну ошибку
+ * Исключение, содержащее одну ошибку безопасности
  *
  * @author Viktor_Loskutov
  */
 @Getter
 @Accessors(chain = true)
-public class ValidationException extends RuntimeException {
+public class AuthorizationException extends RuntimeException {
 
     /**
-     * Базовая модель описание единичной ошибки
+     * Базовая модель описание единичной ошибки авторизации
      */
     @NonNull
     private final WarningMessage warning;
 
-    public ValidationException(String systemName, String displayMessage) {
+    public AuthorizationException(String systemName, String displayMessage) {
         this.warning = new WarningMessage(systemName, displayMessage);
     }
 }

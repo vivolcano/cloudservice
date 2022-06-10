@@ -1,8 +1,10 @@
 package ru.netology.cloudservice.controller;
 
-import lombok.AccessLevel;
+import ru.netology.cloudservice.api.AttachmentResource;
+import ru.netology.cloudservice.api.dto.AttachmentDto;
+import ru.netology.cloudservice.service.AttachmentService;
+
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -12,9 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
-import ru.netology.cloudservice.api.AttachmentResource;
-import ru.netology.cloudservice.api.dto.AttachmentDto;
-import ru.netology.cloudservice.service.AttachmentService;
 
 /**
  * Реализация API для работы с файлами {@link AttachmentResource}
@@ -22,12 +21,11 @@ import ru.netology.cloudservice.service.AttachmentService;
  * @author Viktor_Loskutov
  */
 @Slf4j
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 @RestController
 public class AttachmentResourceImpl implements AttachmentResource {
 
-    AttachmentService attachmentService;
+    private final AttachmentService attachmentService;
 
     @Override
     public ResponseEntity<AttachmentDto> create(MultipartFile file, UriComponentsBuilder componentsBuilder) {

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="1" author="Viktor Loskutov">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="users" remarks="Пользователи в системе">
+            <column name="id" type="uuid" remarks="Уникальный идентификатор пользователя(UUID)"
+                    defaultValueComputed="${new_uuid}">
+                <constraints primaryKey="true" primaryKeyName="users_pk" nullable="false"/>
+            </column>
+
+            <column name="login" type="varchar(20)" remarks="Логин пользователя">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="password" type="varchar(65)" remarks="Пароль пользователя">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="roles_id" type="integer" remarks="Идентификатор роли пользователя">
+                <constraints foreignKeyName="fk_roles_id" references="roles(id)" nullable="false"/>
+            </column>
+
+            <column name="created_at" type="instant" remarks="Дата создания" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="create_user" type="varchar(255)"
+                    remarks="Идентификатор пользователя, который добавлял файл">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="updated_at" type="instant" remarks="Дата обновления" defaultValueComputed="${now}">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_modify_user" type="varchar(255)"
+                    remarks="Идентификатор пользователя, который редактировал (включая добавление) файл">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <comment>Таблица с пользователями</comment>
+    </changeSet>
+
+    <changeSet id="2" author="Viktor Loskutov">
+        <preConditions>
+            <tableExists tableName="users"/>
+        </preConditions>
+
+        <loadUpdateData file="dictionary/test-users.csv" primaryKey="id" relativeToChangelogFile="true"
+                        separator=";" tableName="users">
+            <column name="login" type="string"/>
+            <column name="password" type="string"/>
+            <column name="roles_id" type="integer"/>
+        </loadUpdateData>
+        <comment>Тестовый пользователь</comment>
+    </changeSet>
+
+</databaseChangeLog>

@@ -16,17 +16,11 @@ public class InstantAttributeConverter implements AttributeConverter<Instant, Lo
 
     @Override
     public Long convertToDatabaseColumn(Instant attribute) {
-        if (!Objects.isNull(attribute)) {
-            return attribute.toEpochMilli();
-        }
-        return null;
+        return (!Objects.isNull(attribute)) ? attribute.toEpochMilli() : null;
     }
 
     @Override
     public Instant convertToEntityAttribute(Long value) {
-        if (!Objects.isNull(value)) {
-            return Instant.ofEpochMilli(value);
-        }
-        return null;
+        return (!Objects.isNull(value)) ? Instant.ofEpochMilli(value) : null;
     }
 }
